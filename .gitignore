@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[oc]
+
+# Distribution / packaging
+build/
+dist/
+wheels/
+*.egg-info
+
+# Environment and dependency management
+*.lock
+*.env
+.venv
+
+# Ruff linter cache
+.ruff_cache/
