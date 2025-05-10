@@ -17,7 +17,7 @@ app = FastAPI(
     title="FastAPI Example",
     description="A simple FastAPI example",
     version="1.0",
-    lifespan=lifespan,
+    # lifespan=lifespan,
 )
 
 app.include_router(blog_post_router)

@@ -12,6 +12,7 @@ wheels/
 *.lock
 *.env
 .venv
+.logs
 
 # Ruff linter cache
 .ruff_cache/
