@@ -5,8 +5,8 @@ from typing import Optional, List, TYPE_CHECKING
 from sqlmodel import SQLModel
 
 if TYPE_CHECKING:
-    from .category import CategoryReadSchema
-    from .tag import TagReadSchema
+    from app.domain.schemas.category import CategoryReadSchema
+    from app.domain.schemas.tag import TagReadSchema
 
 
 class BlogPostBaseSchema(SQLModel):
@@ -54,3 +54,9 @@ class BlogPostReadSchema(BlogPostBaseSchema):
 
     category: Optional["CategoryReadSchema"] = None
     tags: List["TagReadSchema"] = []
+
+
+from app.domain.schemas.category import CategoryReadSchema  # noqa: E402
+from app.domain.schemas.tag import TagReadSchema  # noqa: E402
+
+BlogPostReadSchema.model_rebuild()
