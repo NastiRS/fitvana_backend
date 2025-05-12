@@ -1,7 +1,6 @@
 import uuid
 from fastapi import APIRouter, HTTPException, status
 from typing import List
-import uuid
 
 
 from app.repository.blog_post import CurrentBlogPostRepo
@@ -10,21 +9,18 @@ from app.domain.schemas.blog_post import (
     BlogPostReadSchema,
     BlogPostUpdateSchema,
 )
-from app.domain.models.blog_post import BlogPost
 
 router = APIRouter(prefix="/v1/api/blog_posts", tags=["BlogPosts"])
 
 
-@router.post(
-    "/", response_model=BlogPostReadSchema, status_code=status.HTTP_201_CREATED
-)
+@router.post("", response_model=BlogPostReadSchema, status_code=status.HTTP_201_CREATED)
 def create_blog_post(*, blog_post_in: BlogPostCreateSchema, repo: CurrentBlogPostRepo):
     """
     Crea un nuevo blog post.
     """
-    db_blog_post = BlogPost.model_validate(blog_post_in)
+
     try:
-        created_blog_post = repo.create(entity_in=db_blog_post)
+        created_blog_post = repo.create(obj_in=blog_post_in)
         return created_blog_post
     except Exception as e:
         raise HTTPException(
@@ -33,7 +29,7 @@ def create_blog_post(*, blog_post_in: BlogPostCreateSchema, repo: CurrentBlogPos
         )
 
 
-@router.get("/", response_model=List[BlogPostReadSchema])
+@router.get("", response_model=List[BlogPostReadSchema])
 def read_blog_posts(*, skip: int = 0, limit: int = 100, repo: CurrentBlogPostRepo):
     """
     Obtiene múltiples blog posts con paginación.
@@ -65,18 +61,16 @@ def update_blog_post(
     """
     Actualiza un blog post existente.
     """
-    db_blog_post = repo.get_by_id(id=blog_post_id)
-    if not db_blog_post:
+    db_blog_post_to_update = repo.get_by_id(id=blog_post_id)
+    if not db_blog_post_to_update:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="BlogPost no encontrado"
         )
 
-    update_data = blog_post_in.model_dump(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(db_blog_post, key, value)
-
     try:
-        updated_blog_post = repo.update(entity=db_blog_post)
+        updated_blog_post = repo.update(
+            db_obj=db_blog_post_to_update, obj_in=blog_post_in
+        )
         return updated_blog_post
     except Exception as e:
         raise HTTPException(

@@ -5,10 +5,13 @@ from sqlmodel import Session
 
 from .base import BaseRepository
 from app.domain.models.blog_post import BlogPost
+from app.domain.schemas.blog_post import BlogPostCreateSchema, BlogPostUpdateSchema
 from app.core.database.config import get_session
 
 
-class BlogPostRepository(BaseRepository[BlogPost]):
+class BlogPostRepository(
+    BaseRepository[BlogPost, BlogPostCreateSchema, BlogPostUpdateSchema]
+):
     """
     Repositorio específico para el modelo BlogPost.
     Hereda la funcionalidad CRUD básica de BaseRepository.

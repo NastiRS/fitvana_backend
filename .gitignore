@@ -14,5 +14,6 @@ wheels/
 .venv
 .logs
 
-# Ruff linter cache
+#Cache
 .ruff_cache/
+.pytest_cache/

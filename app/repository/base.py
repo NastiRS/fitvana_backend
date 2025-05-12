@@ -3,9 +3,11 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
 from sqlmodel import SQLModel, Session, select
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
+CreateSchemaType = TypeVar("CreateSchemaType", bound=SQLModel)
+UpdateSchemaType = TypeVar("UpdateSchemaType", bound=SQLModel)
 
 
-class BaseRepository(Generic[ModelType]):
+class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType], db_session: Session):
         """
         Repositorio base con operaciones fundamentales de acceso a datos.
@@ -29,16 +31,16 @@ class BaseRepository(Generic[ModelType]):
         self.session.flush()
         self.session.refresh(entity)
 
-    def create(self, *, entity_in: ModelType) -> ModelType:
+    def create(self, *, obj_in: CreateSchemaType) -> ModelType:
         """
-        Añade una nueva entidad a la sesión y la guarda.
-        Si ocurre un error, se realiza un rollback de la sesión y se relanza la excepción.
-        El llamador es responsable de hacer commit si la operación es exitosa.
+        Crea un nuevo registro en la base de datos.
+        Convierte el schema de creación al modelo antes de guardarlo.
         """
+        db_obj = self.model.model_validate(obj_in)
         try:
-            self.session.add(entity_in)
-            self._save(entity_in)
-            return entity_in
+            self.session.add(db_obj)
+            self._save(db_obj)
+            return db_obj
         except Exception:
             self.session.rollback()
             raise
@@ -80,16 +82,18 @@ class BaseRepository(Generic[ModelType]):
         statement = statement.offset(skip).limit(limit)
         return self.session.exec(statement).all()
 
-    def update(self, *, entity: ModelType) -> ModelType:
+    def update(self, *, db_obj: ModelType, obj_in: UpdateSchemaType) -> ModelType:
         """
-        Guarda los cambios de una entidad existente.
-        Se asume que la entidad ya está asociada a la sesión y ha sido modificada.
-        El llamador es responsable de hacer commit.
+        Actualiza un registro existente en la base de datos.
         """
+        obj_data = obj_in.model_dump(exclude_unset=True)
+        for field, value in obj_data.items():
+            setattr(db_obj, field, value)
+
         try:
-            self.session.add(entity)
-            self._save(entity)
-            return entity
+            self.session.add(db_obj)
+            self._save(db_obj)
+            return db_obj
         except Exception:
             self.session.rollback()
             raise
