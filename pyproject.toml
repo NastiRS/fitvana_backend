@@ -1,0 +1,39 @@
+[project]
+name = "gymvana-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "alembic>=1.15.2",
+    "fastapi[standard]>=0.115.12",
+    "psycopg2>=2.9.10",
+    "pydantic-settings>=2.9.1",
+    "python-dotenv>=1.1.0",
+    "slowapi>=0.1.9",
+    "sqlmodel>=0.0.24",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "codespell>=2.4.1",
+    "httpx>=0.28.1",
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "ruff>=0.11.4",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
+
+[tool.codespell]
+ignore-multiline-regex = "(?s)(\"\"\".*?\"\"\"|'''.*?''')"
+
+[tool.uv.workspace]
+members = [
+    "Python Projects/MY/gymvana-backend",
+]

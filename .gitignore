@@ -1,0 +1,19 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[oc]
+
+# Distribution / packaging
+build/
+dist/
+wheels/
+*.egg-info
+
+# Environment and dependency management
+*.lock
+*.env
+.venv
+.logs
+
+#Cache
+.ruff_cache/
+.pytest_cache/
