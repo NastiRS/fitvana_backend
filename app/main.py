@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from app.routers.blog_post import router as blog_post_router
 from app.routers.category import router as category_router
 from app.routers.tag import router as tag_router
+from app.routers.section import router as section_router
+from app.routers.announcement import router as announcement_router
 from app.core.database.config import init_db
 
 
@@ -25,6 +27,8 @@ app = FastAPI(
 app.include_router(blog_post_router)
 app.include_router(category_router)
 app.include_router(tag_router)
+app.include_router(section_router)
+app.include_router(announcement_router)
 
 
 @app.get("/health")
