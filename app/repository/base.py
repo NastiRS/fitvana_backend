@@ -45,6 +45,21 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             self.session.rollback()
             raise
 
+    def create_from_dict(self, *, obj_dict: Dict[str, Any]) -> ModelType:
+        """
+        Crea un nuevo registro en la base de datos a partir de un diccionario.
+        Útil cuando se necesitan realizar transformaciones antes de la creación,
+        como hashear contraseñas.
+        """
+        db_obj = self.model(**obj_dict)
+        try:
+            self.session.add(db_obj)
+            self._save(db_obj)
+            return db_obj
+        except Exception:
+            self.session.rollback()
+            raise
+
     def get_by_id(self, id: Any) -> Optional[ModelType]:
         """
         Obtiene un único registro por su ID. Retorna None si no se encuentra.
