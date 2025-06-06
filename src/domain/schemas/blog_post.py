@@ -5,9 +5,9 @@ from typing import Optional, List, TYPE_CHECKING
 from sqlmodel import SQLModel
 
 if TYPE_CHECKING:
-    from app.domain.schemas.category import CategoryReadSchema
-    from app.domain.schemas.tag import TagReadSchema
-    from app.domain.schemas.section import SectionReadWithoutBlogPost
+    from src.domain.schemas.category import CategoryReadSchema
+    from src.domain.schemas.tag import TagReadSchema
+    from src.domain.schemas.section import SectionReadWithoutBlogPost
 
 
 class BlogPostBaseSchema(SQLModel):
@@ -58,8 +58,8 @@ class BlogPostReadSchema(BlogPostBaseSchema):
     sections: List["SectionReadWithoutBlogPost"] = []
 
 
-from app.domain.schemas.category import CategoryReadSchema  # noqa: E402
-from app.domain.schemas.tag import TagReadSchema  # noqa: E402
-from app.domain.schemas.section import SectionReadWithoutBlogPost  # noqa: E402
+from src.domain.schemas.category import CategoryReadSchema  # noqa: E402
+from src.domain.schemas.tag import TagReadSchema  # noqa: E402
+from src.domain.schemas.section import SectionReadWithoutBlogPost  # noqa: E402
 
 BlogPostReadSchema.model_rebuild()

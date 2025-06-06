@@ -3,14 +3,14 @@ from fastapi import Depends
 from sqlmodel import Session, select
 import uuid
 
-from app.repository.base_many_to_many import BaseManyToManyRepository
-from app.domain.models.announcement import Announcement
-from app.domain.models.blog_post import BlogPost
-from app.domain.schemas.announcement import (
+from src.repository.base_many_to_many import BaseManyToManyRepository
+from src.domain.models.announcement import Announcement
+from src.domain.models.blog_post import BlogPost
+from src.domain.schemas.announcement import (
     AnnouncementCreateSchema,
     AnnouncementUpdateSchema,
 )
-from app.core.database.config import get_session
+from src.core.database.config import get_session
 
 
 class AnnouncementRepository(

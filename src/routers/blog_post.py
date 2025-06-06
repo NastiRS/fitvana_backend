@@ -3,14 +3,14 @@ from fastapi import APIRouter, HTTPException, status
 from typing import List
 
 
-from app.repository.blog_post import CurrentBlogPostRepo
-from app.domain.schemas.blog_post import (
+from src.repository.blog_post import CurrentBlogPostRepo
+from src.domain.schemas.blog_post import (
     BlogPostCreateSchema,
     BlogPostReadSchema,
     BlogPostUpdateSchema,
 )
-from app.domain.schemas.tag import TagReadSchema
-from app.domain.schemas.category import CategoryReadSchema
+from src.domain.schemas.tag import TagReadSchema
+from src.domain.schemas.category import CategoryReadSchema
 
 router = APIRouter(prefix="/v1/api/blog_posts", tags=["BlogPosts"])
 

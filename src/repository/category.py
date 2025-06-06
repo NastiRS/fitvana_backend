@@ -1,10 +1,10 @@
 from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session
-from app.repository.base import BaseRepository
-from app.domain.models.category import Category
-from app.domain.schemas.category import CategoryCreateSchema, CategoryUpdateSchema
-from app.core.database.config import get_session
+from src.repository.base import BaseRepository
+from src.domain.models.category import Category
+from src.domain.schemas.category import CategoryCreateSchema, CategoryUpdateSchema
+from src.core.database.config import get_session
 
 
 class CategoryRepository(

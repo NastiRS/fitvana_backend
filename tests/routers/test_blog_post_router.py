@@ -3,8 +3,8 @@ from fastapi import status
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
-from app.domain.models.blog_post import BlogPost
-from app.domain.models.blog_post_tag_link import BlogPostTagLink
+from src.domain.models.blog_post import BlogPost
+from src.domain.models.blog_post_tag_link import BlogPostTagLink
 
 from tests.fixtures import (
     BLOG_POST_BASE_URL,

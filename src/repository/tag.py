@@ -1,10 +1,10 @@
 from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session
-from app.repository.base import BaseRepository
-from app.domain.models.tag import Tag
-from app.domain.schemas.tag import TagCreateSchema, TagUpdateSchema
-from app.core.database.config import get_session
+from src.repository.base import BaseRepository
+from src.domain.models.tag import Tag
+from src.domain.schemas.tag import TagCreateSchema, TagUpdateSchema
+from src.core.database.config import get_session
 
 
 class TagRepository(BaseRepository[Tag, TagCreateSchema, TagUpdateSchema]):

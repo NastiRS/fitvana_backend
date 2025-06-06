@@ -3,7 +3,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
-from app.domain.models.category import Category
+from src.domain.models.category import Category
 
 from tests.fixtures import (
     CATEGORY_BASE_URL,

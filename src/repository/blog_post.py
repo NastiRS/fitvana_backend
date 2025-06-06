@@ -4,11 +4,11 @@ from sqlmodel import Session, select
 import uuid
 
 from .base_many_to_many import BaseManyToManyRepository
-from app.domain.models.blog_post import BlogPost
-from app.domain.models.tag import Tag
-from app.domain.models.category import Category
-from app.domain.schemas.blog_post import BlogPostCreateSchema, BlogPostUpdateSchema
-from app.core.database.config import get_session
+from src.domain.models.blog_post import BlogPost
+from src.domain.models.tag import Tag
+from src.domain.models.category import Category
+from src.domain.schemas.blog_post import BlogPostCreateSchema, BlogPostUpdateSchema
+from src.core.database.config import get_session
 
 
 class BlogPostRepository(

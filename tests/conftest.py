@@ -3,20 +3,20 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, create_engine
 from typing import Generator
 
-from app.main import app
-from app.core.database.config import get_session as original_get_session
+from src.main import app
+from src.core.database.config import get_session as original_get_session
 
 from tests.settings import test_db_settings
 
 
-from app.domain.models.base import Base
-from app.domain.models.announcement import Announcement  # noqa: F401
-from app.domain.models.category import Category  # noqa: F401
-from app.domain.models.blog_post_announcement_link import BlogPostAnnouncementLink  # noqa: F401
-from app.domain.models.blog_post_tag_link import BlogPostTagLink  # noqa: F401
-from app.domain.models.blog_post import BlogPost  # noqa: F401
-from app.domain.models.section import Section  # noqa: F401
-from app.domain.models.tag import Tag  # noqa: F401
+from src.domain.models.base import Base
+from src.domain.models.announcement import Announcement  # noqa: F401
+from src.domain.models.category import Category  # noqa: F401
+from src.domain.models.blog_post_announcement_link import BlogPostAnnouncementLink  # noqa: F401
+from src.domain.models.blog_post_tag_link import BlogPostTagLink  # noqa: F401
+from src.domain.models.blog_post import BlogPost  # noqa: F401
+from src.domain.models.section import Section  # noqa: F401
+from src.domain.models.tag import Tag  # noqa: F401
 
 
 TEST_SQLALCHEMY_DATABASE_URL = (

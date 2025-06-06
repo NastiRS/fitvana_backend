@@ -3,10 +3,10 @@ from fastapi import Depends
 from sqlmodel import Session, select
 import uuid
 
-from app.repository.base import BaseRepository
-from app.domain.models.section import Section
-from app.domain.schemas.section import SectionCreateSchema, SectionUpdateSchema
-from app.core.database.config import get_session
+from src.repository.base import BaseRepository
+from src.domain.models.section import Section
+from src.domain.schemas.section import SectionCreateSchema, SectionUpdateSchema
+from src.core.database.config import get_session
 
 
 class SectionRepository(

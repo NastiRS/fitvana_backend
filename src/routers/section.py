@@ -2,14 +2,14 @@ from typing import List
 import uuid
 from fastapi import APIRouter, HTTPException, status, Depends
 
-from app.domain.schemas.section import (
+from src.domain.schemas.section import (
     SectionReadSchema,
     SectionCreateSchema,
     SectionUpdateSchema,
 )
-from app.repository.section import CurrentSectionRepo
-from app.repository.blog_post import BlogPostRepository, get_blog_post_repository
-from app.domain.models.blog_post import BlogPost
+from src.repository.section import CurrentSectionRepo
+from src.repository.blog_post import BlogPostRepository, get_blog_post_repository
+from src.domain.models.blog_post import BlogPost
 
 router = APIRouter(prefix="/v1/api/sections", tags=["Sections"])
 

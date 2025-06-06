@@ -2,15 +2,15 @@ from typing import List
 import uuid
 from fastapi import APIRouter, HTTPException, status, Depends
 
-from app.domain.schemas.announcement import (
+from src.domain.schemas.announcement import (
     AnnouncementReadSchema,
     AnnouncementCreateSchema,
     AnnouncementUpdateSchema,
 )
-from app.domain.schemas.blog_post import BlogPostReadSchema
-from app.repository.announcement import CurrentAnnouncementRepo
-from app.repository.blog_post import BlogPostRepository, get_blog_post_repository
-from app.domain.models.blog_post import BlogPost
+from src.domain.schemas.blog_post import BlogPostReadSchema
+from src.repository.announcement import CurrentAnnouncementRepo
+from src.repository.blog_post import BlogPostRepository, get_blog_post_repository
+from src.domain.models.blog_post import BlogPost
 
 router = APIRouter(prefix="/v1/api/announcements", tags=["Announcements"])
 

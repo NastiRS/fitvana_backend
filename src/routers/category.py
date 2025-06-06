@@ -2,15 +2,15 @@ from typing import List
 import uuid
 from fastapi import APIRouter, HTTPException, status, Depends
 
-from app.domain.schemas.category import (
+from src.domain.schemas.category import (
     CategoryReadSchema,
     CategoryCreateSchema,
     CategoryUpdateSchema,
 )
-from app.domain.schemas.blog_post import BlogPostReadSchema
-from app.repository.category import CurrentCategoryRepo
-from app.repository.blog_post import BlogPostRepository, get_blog_post_repository
-from app.domain.models.category import Category
+from src.domain.schemas.blog_post import BlogPostReadSchema
+from src.repository.category import CurrentCategoryRepo
+from src.repository.blog_post import BlogPostRepository, get_blog_post_repository
+from src.domain.models.category import Category
 
 router = APIRouter(prefix="/v1/api/categories", tags=["Categories"])
 

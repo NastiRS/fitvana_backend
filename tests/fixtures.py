@@ -2,11 +2,11 @@ import uuid
 from datetime import date
 from sqlmodel import Session
 
-from app.domain.models.category import Category
-from app.domain.models.blog_post import BlogPost
-from app.domain.models.tag import Tag
-from app.domain.models.section import Section
-from app.domain.models.announcement import Announcement
+from src.domain.models.category import Category
+from src.domain.models.blog_post import BlogPost
+from src.domain.models.tag import Tag
+from src.domain.models.section import Section
+from src.domain.models.announcement import Announcement
 
 
 # URLs para tests de categorías

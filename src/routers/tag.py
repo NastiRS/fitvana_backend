@@ -2,8 +2,8 @@ from typing import List
 import uuid
 from fastapi import APIRouter, HTTPException, status
 
-from app.domain.schemas.tag import TagReadSchema, TagCreateSchema, TagUpdateSchema
-from app.repository.tag import CurrentTagRepo
+from src.domain.schemas.tag import TagReadSchema, TagCreateSchema, TagUpdateSchema
+from src.repository.tag import CurrentTagRepo
 
 router = APIRouter(prefix="/v1/api/tags", tags=["Tags"])
 
