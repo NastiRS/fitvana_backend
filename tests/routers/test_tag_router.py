@@ -1,9 +1,10 @@
 import uuid
+
 from fastapi import status
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
-from app.domain.models.tag import Tag
+from src.domain.models.tag import Tag
 from tests.fixtures import TAG_BASE_URL, TAG_ID_URL
 
 

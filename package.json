@@ -1,0 +1,20 @@
+{
+  "name": "fitvana_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "uv sync",
+    "dev": "uv run fastapi dev src/main.py",
+    "start": "uv run uvicorn src.main:app --host 0.0.0.0 --port 8000",
+    "lint": "uv run ruff check --fix .",
+    "format": "uv run ruff format .",
+    "check-types": "uv run mypy --ignore-missing-imports --explicit-package-bases .",  
+    "test": "uv run pytest -v",
+    "qa": "pnpm run check-types && pnpm run lint && pnpm run format"
+      },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0"
+}

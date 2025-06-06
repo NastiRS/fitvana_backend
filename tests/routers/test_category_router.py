@@ -1,16 +1,16 @@
 import uuid
+
 from fastapi import status
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
-from app.domain.models.category import Category
-
+from src.domain.models.category import Category
 from tests.fixtures import (
+    BLOG_POSTS_BY_CATEGORY_URL,
     CATEGORY_BASE_URL,
     CATEGORY_ID_URL,
-    BLOG_POSTS_BY_CATEGORY_URL,
-    create_test_category,
     create_test_blog_post,
+    create_test_category,
 )
 
 
@@ -70,7 +70,6 @@ def test_read_category_not_found(client: TestClient):
 
 def test_read_categories_empty(client: TestClient, db_session_test: Session):
     """Prueba la lectura de categorías cuando no hay ninguna."""
-
     all_categories = db_session_test.exec(select(Category)).all()
     for cat in all_categories:
         db_session_test.delete(cat)
@@ -100,7 +99,7 @@ def test_read_categories_with_items(client: TestClient, db_session_test: Session
 def test_update_category_success(client: TestClient, db_session_test: Session):
     """Prueba la actualización exitosa de una categoría."""
     original_category = Category(
-        name="Nombre Original", description="Descripción Original"
+        name="Nombre Original", description="Descripción Original",
     )
     db_session_test.add(original_category)
     db_session_test.commit()
@@ -112,7 +111,7 @@ def test_update_category_success(client: TestClient, db_session_test: Session):
         "description": "Descripción Actualizada",
     }
     response = client.put(
-        CATEGORY_ID_URL.format(category_id=category_id_to_update), json=update_data
+        CATEGORY_ID_URL.format(category_id=category_id_to_update), json=update_data,
     )
     assert response.status_code == status.HTTP_200_OK
 
@@ -131,7 +130,7 @@ def test_update_category_not_found(client: TestClient):
     non_existent_id = str(uuid.uuid4())
     update_data = {"name": "No Importa"}
     response = client.put(
-        CATEGORY_ID_URL.format(category_id=non_existent_id), json=update_data
+        CATEGORY_ID_URL.format(category_id=non_existent_id), json=update_data,
     )
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -139,7 +138,7 @@ def test_update_category_not_found(client: TestClient):
 def test_delete_category_success(client: TestClient, db_session_test: Session):
     """Prueba la eliminación exitosa de una categoría."""
     category_to_delete = Category(
-        name="Para Borrar Definitivamente", description="Adiós"
+        name="Para Borrar Definitivamente", description="Adiós",
     )
     db_session_test.add(category_to_delete)
     db_session_test.commit()
@@ -165,21 +164,21 @@ def test_delete_category_not_found(client: TestClient):
 
 
 def test_get_blog_posts_by_category_success(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
     """Prueba obtener todos los blog posts de una categoría."""
     category = create_test_category(db_session_test, name="Categoría con Posts")
 
     post1 = create_test_blog_post(
-        db_session_test, title="Post 1 en Categoría", category_id=category.id
+        db_session_test, title="Post 1 en Categoría", category_id=category.id,
     )
     post2 = create_test_blog_post(
-        db_session_test, title="Post 2 en Categoría", category_id=category.id
+        db_session_test, title="Post 2 en Categoría", category_id=category.id,
     )
 
     other_category = create_test_category(db_session_test, name="Otra Categoría")
     create_test_blog_post(
-        db_session_test, title="Post en Otra Categoría", category_id=other_category.id
+        db_session_test, title="Post en Otra Categoría", category_id=other_category.id,
     )
 
     response = client.get(BLOG_POSTS_BY_CATEGORY_URL.format(category_id=category.id))
@@ -201,7 +200,7 @@ def test_get_blog_posts_by_category_empty(client: TestClient, db_session_test: S
     empty_category = create_test_category(db_session_test, name="Categoría Vacía")
 
     response = client.get(
-        BLOG_POSTS_BY_CATEGORY_URL.format(category_id=empty_category.id)
+        BLOG_POSTS_BY_CATEGORY_URL.format(category_id=empty_category.id),
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == []
@@ -212,7 +211,7 @@ def test_get_blog_posts_by_category_not_found(client: TestClient):
     non_existent_id = str(uuid.uuid4())
 
     response = client.get(
-        BLOG_POSTS_BY_CATEGORY_URL.format(category_id=non_existent_id)
+        BLOG_POSTS_BY_CATEGORY_URL.format(category_id=non_existent_id),
     )
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "no encontrada" in response.json()["detail"]

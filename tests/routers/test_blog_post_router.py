@@ -1,21 +1,21 @@
 import uuid
+
 from fastapi import status
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
-from app.domain.models.blog_post import BlogPost
-from app.domain.models.blog_post_tag_link import BlogPostTagLink
-
+from src.domain.models.blog_post import BlogPost
+from src.domain.models.blog_post_tag_link import BlogPostTagLink
 from tests.fixtures import (
     BLOG_POST_BASE_URL,
     BLOG_POST_ID_URL,
-    TAG_URL,
-    TAGS_URL,
     CATEGORY_URL,
     GET_CATEGORY_URL,
+    TAG_URL,
+    TAGS_URL,
+    create_test_blog_post,
     create_test_category,
     create_test_tag,
-    create_test_blog_post,
 )
 
 
@@ -56,7 +56,7 @@ def test_read_blog_post_success(client: TestClient, db_session_test: Session):
     post_title = "Post para Leer"
     post_content = "Contenido detallado."
     new_post = create_test_blog_post(
-        db_session_test, title=post_title, content=post_content, category_id=category.id
+        db_session_test, title=post_title, content=post_content, category_id=category.id,
     )
     created_post_id = new_post.id
 
@@ -106,7 +106,7 @@ def test_update_blog_post_success(client: TestClient, db_session_test: Session):
         "content": "Contenido Actualizado.",
     }
     response = client.put(
-        BLOG_POST_ID_URL.format(blog_post_id=post_id_to_update), json=update_payload
+        BLOG_POST_ID_URL.format(blog_post_id=post_id_to_update), json=update_payload,
     )
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
@@ -123,7 +123,7 @@ def test_delete_blog_post_success(client: TestClient, db_session_test: Session):
     """Prueba la eliminación exitosa de un blog post."""
     category = create_test_category(db_session_test, name="Delete Categoria")
     post_to_delete = create_test_blog_post(
-        db_session_test, title="Post a Eliminar", content="Bye", category_id=category.id
+        db_session_test, title="Post a Eliminar", content="Bye", category_id=category.id,
     )
     post_id = post_to_delete.id
 
@@ -153,7 +153,7 @@ def test_add_tag_to_blog_post_success(client: TestClient, db_session_test: Sessi
     assert data["tags"][0]["name"] == tag.name
 
     stmt = select(BlogPostTagLink).where(
-        BlogPostTagLink.blog_post_id == blog_post.id, BlogPostTagLink.tag_id == tag.id
+        BlogPostTagLink.blog_post_id == blog_post.id, BlogPostTagLink.tag_id == tag.id,
     )
     link = db_session_test.exec(stmt).first()
     assert link is not None
@@ -170,21 +170,21 @@ def test_add_tag_to_blog_post_not_found(client: TestClient, db_session_test: Ses
 
 
 def test_add_tag_to_blog_post_tag_not_found(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
     """Prueba agregar un tag que no existe a un blog post."""
     blog_post = create_test_blog_post(db_session_test)
     non_existent_tag_id = str(uuid.uuid4())
 
     response = client.post(
-        TAG_URL.format(blog_post_id=blog_post.id, tag_id=non_existent_tag_id)
+        TAG_URL.format(blog_post_id=blog_post.id, tag_id=non_existent_tag_id),
     )
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "no encontrado" in response.json()["detail"]
 
 
 def test_remove_tag_from_blog_post_success(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
     """Prueba eliminar un tag de un blog post exitosamente."""
     blog_post = create_test_blog_post(db_session_test)
@@ -208,7 +208,7 @@ def test_remove_tag_from_blog_post_success(
     assert len(blog_post.tags) == 0
 
     stmt = select(BlogPostTagLink).where(
-        BlogPostTagLink.blog_post_id == blog_post.id, BlogPostTagLink.tag_id == tag.id
+        BlogPostTagLink.blog_post_id == blog_post.id, BlogPostTagLink.tag_id == tag.id,
     )
     link = db_session_test.exec(stmt).first()
     assert link is None
@@ -246,7 +246,7 @@ def test_get_blog_post_tags_empty(client: TestClient, db_session_test: Session):
 
 
 def test_assign_category_to_blog_post_success(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
     """Prueba asignar una categoría a un blog post exitosamente."""
     initial_category = create_test_category(db_session_test, name="Categoría Inicial")
@@ -255,7 +255,7 @@ def test_assign_category_to_blog_post_success(
     new_category = create_test_category(db_session_test, name="Nueva Categoría")
 
     response = client.put(
-        CATEGORY_URL.format(blog_post_id=blog_post.id, category_id=new_category.id)
+        CATEGORY_URL.format(blog_post_id=blog_post.id, category_id=new_category.id),
     )
     assert response.status_code == status.HTTP_200_OK
 
@@ -271,21 +271,21 @@ def test_assign_category_to_blog_post_success(
 
 
 def test_assign_category_to_blog_post_not_found(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
     """Prueba asignar una categoría a un blog post que no existe."""
     category = create_test_category(db_session_test, name="Categoría Sin Post")
     non_existent_id = str(uuid.uuid4())
 
     response = client.put(
-        CATEGORY_URL.format(blog_post_id=non_existent_id, category_id=category.id)
+        CATEGORY_URL.format(blog_post_id=non_existent_id, category_id=category.id),
     )
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "no encontrado" in response.json()["detail"]
 
 
 def test_assign_category_to_blog_post_category_not_found(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
     """Prueba asignar una categoría que no existe a un blog post."""
     blog_post = create_test_blog_post(db_session_test)
@@ -293,8 +293,8 @@ def test_assign_category_to_blog_post_category_not_found(
 
     response = client.put(
         CATEGORY_URL.format(
-            blog_post_id=blog_post.id, category_id=non_existent_category_id
-        )
+            blog_post_id=blog_post.id, category_id=non_existent_category_id,
+        ),
     )
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert "no encontrada" in response.json()["detail"]
@@ -314,7 +314,7 @@ def test_get_blog_post_category_success(client: TestClient, db_session_test: Ses
 
 
 def test_get_blog_post_category_blog_post_not_found(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
     """Prueba obtener la categoría de un blog post que no existe."""
     non_existent_id = str(uuid.uuid4())

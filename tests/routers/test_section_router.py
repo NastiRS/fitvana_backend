@@ -1,4 +1,5 @@
 import uuid
+
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
@@ -6,14 +7,13 @@ from tests.fixtures import (
     SECTION_BASE_URL,
     SECTION_ID_URL,
     SECTIONS_BY_BLOG_POST_URL,
-    create_test_section,
     create_test_blog_post,
+    create_test_section,
 )
 
 
 def test_create_section_success(client: TestClient, db_session_test: Session):
-    """
-    Test para crear una sección exitosamente.
+    """Test para crear una sección exitosamente.
     """
     blog_post = create_test_blog_post(db_session_test)
 
@@ -38,8 +38,7 @@ def test_create_section_success(client: TestClient, db_session_test: Session):
 
 
 def test_create_section_missing_required_fields(client: TestClient):
-    """
-    Test para verificar que fallan los datos requeridos al crear una sección.
+    """Test para verificar que fallan los datos requeridos al crear una sección.
     """
     section_data = {"title": "Sección sin blog_post_id", "content": "Contenido"}
 
@@ -49,8 +48,7 @@ def test_create_section_missing_required_fields(client: TestClient):
 
 
 def test_read_section_success(client: TestClient, db_session_test: Session):
-    """
-    Test para obtener una sección por ID exitosamente.
+    """Test para obtener una sección por ID exitosamente.
     """
     section = create_test_section(db_session_test)
 
@@ -65,8 +63,7 @@ def test_read_section_success(client: TestClient, db_session_test: Session):
 
 
 def test_read_section_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento cuando una sección no existe.
+    """Test para verificar el comportamiento cuando una sección no existe.
     """
     fake_section_id = uuid.uuid4()
 
@@ -77,8 +74,7 @@ def test_read_section_not_found(client: TestClient):
 
 
 def test_read_sections_empty(client: TestClient, db_session_test: Session):
-    """
-    Test para obtener todas las secciones cuando la base de datos está vacía.
+    """Test para obtener todas las secciones cuando la base de datos está vacía.
     """
     response = client.get(SECTION_BASE_URL)
 
@@ -88,15 +84,14 @@ def test_read_sections_empty(client: TestClient, db_session_test: Session):
 
 
 def test_read_sections_with_items(client: TestClient, db_session_test: Session):
-    """
-    Test para obtener todas las secciones cuando hay elementos en la base de datos.
+    """Test para obtener todas las secciones cuando hay elementos en la base de datos.
     """
     blog_post = create_test_blog_post(db_session_test)
     _ = create_test_section(
-        db_session_test, title="Sección 1", blog_post_id=blog_post.id
+        db_session_test, title="Sección 1", blog_post_id=blog_post.id,
     )
     _ = create_test_section(
-        db_session_test, title="Sección 2", blog_post_id=blog_post.id
+        db_session_test, title="Sección 2", blog_post_id=blog_post.id,
     )
 
     response = client.get(SECTION_BASE_URL)
@@ -110,8 +105,7 @@ def test_read_sections_with_items(client: TestClient, db_session_test: Session):
 
 
 def test_update_section_success(client: TestClient, db_session_test: Session):
-    """
-    Test para actualizar una sección exitosamente.
+    """Test para actualizar una sección exitosamente.
     """
     section = create_test_section(db_session_test)
 
@@ -122,7 +116,7 @@ def test_update_section_success(client: TestClient, db_session_test: Session):
     }
 
     response = client.put(
-        SECTION_ID_URL.format(section_id=section.id), json=update_data
+        SECTION_ID_URL.format(section_id=section.id), json=update_data,
     )
 
     assert response.status_code == 200
@@ -134,14 +128,13 @@ def test_update_section_success(client: TestClient, db_session_test: Session):
 
 
 def test_update_section_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento al actualizar una sección que no existe.
+    """Test para verificar el comportamiento al actualizar una sección que no existe.
     """
     fake_section_id = uuid.uuid4()
     update_data = {"title": "Título Actualizado"}
 
     response = client.put(
-        SECTION_ID_URL.format(section_id=fake_section_id), json=update_data
+        SECTION_ID_URL.format(section_id=fake_section_id), json=update_data,
     )
 
     assert response.status_code == 404
@@ -149,8 +142,7 @@ def test_update_section_not_found(client: TestClient):
 
 
 def test_delete_section_success(client: TestClient, db_session_test: Session):
-    """
-    Test para eliminar una sección exitosamente.
+    """Test para eliminar una sección exitosamente.
     """
     section = create_test_section(db_session_test)
 
@@ -164,8 +156,7 @@ def test_delete_section_success(client: TestClient, db_session_test: Session):
 
 
 def test_delete_section_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento al eliminar una sección que no existe.
+    """Test para verificar el comportamiento al eliminar una sección que no existe.
     """
     fake_section_id = uuid.uuid4()
 
@@ -176,22 +167,21 @@ def test_delete_section_not_found(client: TestClient):
 
 
 def test_get_sections_by_blog_post_success(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para obtener secciones de un blog post específico ordenadas por position_order.
+    """Test para obtener secciones de un blog post específico ordenadas por position_order.
     """
     blog_post = create_test_blog_post(db_session_test)
 
     # Crear secciones con diferentes position_order
     _ = create_test_section(
-        db_session_test, title="Sección 3", position_order=3, blog_post_id=blog_post.id
+        db_session_test, title="Sección 3", position_order=3, blog_post_id=blog_post.id,
     )
     _ = create_test_section(
-        db_session_test, title="Sección 1", position_order=1, blog_post_id=blog_post.id
+        db_session_test, title="Sección 1", position_order=1, blog_post_id=blog_post.id,
     )
     _ = create_test_section(
-        db_session_test, title="Sección 2", position_order=2, blog_post_id=blog_post.id
+        db_session_test, title="Sección 2", position_order=2, blog_post_id=blog_post.id,
     )
 
     response = client.get(SECTIONS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id))
@@ -210,13 +200,12 @@ def test_get_sections_by_blog_post_success(
 
 
 def test_get_sections_by_blog_post_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento cuando el blog post no existe.
+    """Test para verificar el comportamiento cuando el blog post no existe.
     """
     fake_blog_post_id = uuid.uuid4()
 
     response = client.get(
-        SECTIONS_BY_BLOG_POST_URL.format(blog_post_id=fake_blog_post_id)
+        SECTIONS_BY_BLOG_POST_URL.format(blog_post_id=fake_blog_post_id),
     )
 
     assert response.status_code == 404
@@ -224,8 +213,7 @@ def test_get_sections_by_blog_post_not_found(client: TestClient):
 
 
 def test_get_sections_by_blog_post_empty(client: TestClient, db_session_test: Session):
-    """
-    Test para obtener secciones de un blog post que no tiene secciones.
+    """Test para obtener secciones de un blog post que no tiene secciones.
     """
     blog_post = create_test_blog_post(db_session_test)
 
@@ -237,10 +225,9 @@ def test_get_sections_by_blog_post_empty(client: TestClient, db_session_test: Se
 
 
 def test_get_sections_by_blog_post_with_pagination(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para verificar la paginación en la obtención de secciones por blog post.
+    """Test para verificar la paginación en la obtención de secciones por blog post.
     """
     blog_post = create_test_blog_post(db_session_test)
 
@@ -255,7 +242,7 @@ def test_get_sections_by_blog_post_with_pagination(
 
     # Obtener las primeras 3 secciones
     response = client.get(
-        SECTIONS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id) + "?skip=0&limit=3"
+        SECTIONS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id) + "?skip=0&limit=3",
     )
 
     assert response.status_code == 200
@@ -266,7 +253,7 @@ def test_get_sections_by_blog_post_with_pagination(
 
     # Obtener las siguientes 2 secciones
     response = client.get(
-        SECTIONS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id) + "?skip=3&limit=3"
+        SECTIONS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id) + "?skip=3&limit=3",
     )
 
     assert response.status_code == 200
@@ -277,22 +264,21 @@ def test_get_sections_by_blog_post_with_pagination(
 
 
 def test_get_sections_by_blog_post_ordered_by_position(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para verificar que las secciones se devuelven ordenadas por position_order.
+    """Test para verificar que las secciones se devuelven ordenadas por position_order.
     """
     blog_post = create_test_blog_post(db_session_test)
 
     # Crear secciones con diferentes position_order
     _ = create_test_section(
-        db_session_test, title="Sección 3", position_order=3, blog_post_id=blog_post.id
+        db_session_test, title="Sección 3", position_order=3, blog_post_id=blog_post.id,
     )
     _ = create_test_section(
-        db_session_test, title="Sección 1", position_order=1, blog_post_id=blog_post.id
+        db_session_test, title="Sección 1", position_order=1, blog_post_id=blog_post.id,
     )
     _ = create_test_section(
-        db_session_test, title="Sección 2", position_order=2, blog_post_id=blog_post.id
+        db_session_test, title="Sección 2", position_order=2, blog_post_id=blog_post.id,
     )
 
     response = client.get(SECTIONS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id))

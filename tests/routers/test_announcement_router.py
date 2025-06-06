@@ -1,12 +1,13 @@
 import uuid
+
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from tests.fixtures import (
     ANNOUNCEMENT_BASE_URL,
+    ANNOUNCEMENT_BLOG_POSTS_URL,
     ANNOUNCEMENT_ID_URL,
     ANNOUNCEMENT_TO_BLOG_POST_URL,
-    ANNOUNCEMENT_BLOG_POSTS_URL,
     ANNOUNCEMENTS_BY_BLOG_POST_URL,
     create_test_announcement,
     create_test_blog_post,
@@ -14,8 +15,7 @@ from tests.fixtures import (
 
 
 def test_create_announcement_success(client: TestClient, db_session_test: Session):
-    """
-    Test para crear un anuncio exitosamente.
+    """Test para crear un anuncio exitosamente.
     """
     announcement_data = {
         "name": "Nuevo Anuncio",
@@ -34,8 +34,7 @@ def test_create_announcement_success(client: TestClient, db_session_test: Sessio
 
 
 def test_create_announcement_missing_required_fields(client: TestClient):
-    """
-    Test para verificar que fallan los datos requeridos al crear un anuncio.
+    """Test para verificar que fallan los datos requeridos al crear un anuncio.
     """
     announcement_data = {"url": "https://ejemplo.com"}
 
@@ -45,8 +44,7 @@ def test_create_announcement_missing_required_fields(client: TestClient):
 
 
 def test_read_announcement_success(client: TestClient, db_session_test: Session):
-    """
-    Test para obtener un anuncio por ID exitosamente.
+    """Test para obtener un anuncio por ID exitosamente.
     """
     announcement = create_test_announcement(db_session_test)
 
@@ -61,13 +59,12 @@ def test_read_announcement_success(client: TestClient, db_session_test: Session)
 
 
 def test_read_announcement_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento cuando un anuncio no existe.
+    """Test para verificar el comportamiento cuando un anuncio no existe.
     """
     fake_announcement_id = uuid.uuid4()
 
     response = client.get(
-        ANNOUNCEMENT_ID_URL.format(announcement_id=fake_announcement_id)
+        ANNOUNCEMENT_ID_URL.format(announcement_id=fake_announcement_id),
     )
 
     assert response.status_code == 404
@@ -75,8 +72,7 @@ def test_read_announcement_not_found(client: TestClient):
 
 
 def test_read_announcements_empty(client: TestClient, db_session_test: Session):
-    """
-    Test para obtener todos los anuncios cuando la base de datos está vacía.
+    """Test para obtener todos los anuncios cuando la base de datos está vacía.
     """
     response = client.get(ANNOUNCEMENT_BASE_URL)
 
@@ -86,8 +82,7 @@ def test_read_announcements_empty(client: TestClient, db_session_test: Session):
 
 
 def test_read_announcements_with_items(client: TestClient, db_session_test: Session):
-    """
-    Test para obtener todos los anuncios cuando hay elementos en la base de datos.
+    """Test para obtener todos los anuncios cuando hay elementos en la base de datos.
     """
     _ = create_test_announcement(db_session_test, name="Anuncio 1")
     _ = create_test_announcement(db_session_test, name="Anuncio 2")
@@ -103,8 +98,7 @@ def test_read_announcements_with_items(client: TestClient, db_session_test: Sess
 
 
 def test_update_announcement_success(client: TestClient, db_session_test: Session):
-    """
-    Test para actualizar un anuncio exitosamente.
+    """Test para actualizar un anuncio exitosamente.
     """
     announcement = create_test_announcement(db_session_test)
 
@@ -115,7 +109,7 @@ def test_update_announcement_success(client: TestClient, db_session_test: Sessio
     }
 
     response = client.put(
-        ANNOUNCEMENT_ID_URL.format(announcement_id=announcement.id), json=update_data
+        ANNOUNCEMENT_ID_URL.format(announcement_id=announcement.id), json=update_data,
     )
 
     assert response.status_code == 200
@@ -127,8 +121,7 @@ def test_update_announcement_success(client: TestClient, db_session_test: Sessio
 
 
 def test_update_announcement_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento al actualizar un anuncio que no existe.
+    """Test para verificar el comportamiento al actualizar un anuncio que no existe.
     """
     fake_announcement_id = uuid.uuid4()
     update_data = {"name": "Anuncio Actualizado"}
@@ -143,32 +136,30 @@ def test_update_announcement_not_found(client: TestClient):
 
 
 def test_delete_announcement_success(client: TestClient, db_session_test: Session):
-    """
-    Test para eliminar un anuncio exitosamente.
+    """Test para eliminar un anuncio exitosamente.
     """
     announcement = create_test_announcement(db_session_test)
 
     response = client.delete(
-        ANNOUNCEMENT_ID_URL.format(announcement_id=announcement.id)
+        ANNOUNCEMENT_ID_URL.format(announcement_id=announcement.id),
     )
 
     assert response.status_code == 204
 
     # Verificar que el anuncio ya no existe
     get_response = client.get(
-        ANNOUNCEMENT_ID_URL.format(announcement_id=announcement.id)
+        ANNOUNCEMENT_ID_URL.format(announcement_id=announcement.id),
     )
     assert get_response.status_code == 404
 
 
 def test_delete_announcement_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento al eliminar un anuncio que no existe.
+    """Test para verificar el comportamiento al eliminar un anuncio que no existe.
     """
     fake_announcement_id = uuid.uuid4()
 
     response = client.delete(
-        ANNOUNCEMENT_ID_URL.format(announcement_id=fake_announcement_id)
+        ANNOUNCEMENT_ID_URL.format(announcement_id=fake_announcement_id),
     )
 
     assert response.status_code == 404
@@ -179,18 +170,17 @@ def test_delete_announcement_not_found(client: TestClient):
 
 
 def test_add_announcement_to_blog_post_success(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para agregar un anuncio a un blog post exitosamente.
+    """Test para agregar un anuncio a un blog post exitosamente.
     """
     blog_post = create_test_blog_post(db_session_test)
     announcement = create_test_announcement(db_session_test)
 
     response = client.post(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=blog_post.id, announcement_id=announcement.id
-        )
+            blog_post_id=blog_post.id, announcement_id=announcement.id,
+        ),
     )
 
     assert response.status_code == 200
@@ -199,18 +189,17 @@ def test_add_announcement_to_blog_post_success(
 
 
 def test_add_announcement_to_blog_post_blog_post_not_found(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para verificar el comportamiento cuando el blog post no existe.
+    """Test para verificar el comportamiento cuando el blog post no existe.
     """
     fake_blog_post_id = uuid.uuid4()
     announcement = create_test_announcement(db_session_test)
 
     response = client.post(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=fake_blog_post_id, announcement_id=announcement.id
-        )
+            blog_post_id=fake_blog_post_id, announcement_id=announcement.id,
+        ),
     )
 
     assert response.status_code == 404
@@ -218,18 +207,17 @@ def test_add_announcement_to_blog_post_blog_post_not_found(
 
 
 def test_add_announcement_to_blog_post_announcement_not_found(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para verificar el comportamiento cuando el anuncio no existe.
+    """Test para verificar el comportamiento cuando el anuncio no existe.
     """
     blog_post = create_test_blog_post(db_session_test)
     fake_announcement_id = uuid.uuid4()
 
     response = client.post(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=blog_post.id, announcement_id=fake_announcement_id
-        )
+            blog_post_id=blog_post.id, announcement_id=fake_announcement_id,
+        ),
     )
 
     assert response.status_code == 404
@@ -237,10 +225,9 @@ def test_add_announcement_to_blog_post_announcement_not_found(
 
 
 def test_remove_announcement_from_blog_post_success(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para eliminar un anuncio de un blog post exitosamente.
+    """Test para eliminar un anuncio de un blog post exitosamente.
     """
     blog_post = create_test_blog_post(db_session_test)
     announcement = create_test_announcement(db_session_test)
@@ -248,15 +235,15 @@ def test_remove_announcement_from_blog_post_success(
     # Primero agregar el anuncio al blog post
     client.post(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=blog_post.id, announcement_id=announcement.id
-        )
+            blog_post_id=blog_post.id, announcement_id=announcement.id,
+        ),
     )
 
     # Luego eliminarlo
     response = client.delete(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=blog_post.id, announcement_id=announcement.id
-        )
+            blog_post_id=blog_post.id, announcement_id=announcement.id,
+        ),
     )
 
     assert response.status_code == 200
@@ -265,10 +252,9 @@ def test_remove_announcement_from_blog_post_success(
 
 
 def test_get_blog_posts_for_announcement_success(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para obtener blog posts de un anuncio exitosamente.
+    """Test para obtener blog posts de un anuncio exitosamente.
     """
     announcement = create_test_announcement(db_session_test)
     blog_post1 = create_test_blog_post(db_session_test, title="Blog Post 1")
@@ -277,17 +263,17 @@ def test_get_blog_posts_for_announcement_success(
     # Agregar el anuncio a los blog posts
     client.post(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=blog_post1.id, announcement_id=announcement.id
-        )
+            blog_post_id=blog_post1.id, announcement_id=announcement.id,
+        ),
     )
     client.post(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=blog_post2.id, announcement_id=announcement.id
-        )
+            blog_post_id=blog_post2.id, announcement_id=announcement.id,
+        ),
     )
 
     response = client.get(
-        ANNOUNCEMENT_BLOG_POSTS_URL.format(announcement_id=announcement.id)
+        ANNOUNCEMENT_BLOG_POSTS_URL.format(announcement_id=announcement.id),
     )
 
     assert response.status_code == 200
@@ -299,13 +285,12 @@ def test_get_blog_posts_for_announcement_success(
 
 
 def test_get_blog_posts_for_announcement_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento cuando el anuncio no existe.
+    """Test para verificar el comportamiento cuando el anuncio no existe.
     """
     fake_announcement_id = uuid.uuid4()
 
     response = client.get(
-        ANNOUNCEMENT_BLOG_POSTS_URL.format(announcement_id=fake_announcement_id)
+        ANNOUNCEMENT_BLOG_POSTS_URL.format(announcement_id=fake_announcement_id),
     )
 
     assert response.status_code == 404
@@ -313,10 +298,9 @@ def test_get_blog_posts_for_announcement_not_found(client: TestClient):
 
 
 def test_get_announcements_by_blog_post_success(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para obtener anuncios por blog post exitosamente.
+    """Test para obtener anuncios por blog post exitosamente.
     """
     blog_post = create_test_blog_post(db_session_test)
     announcement1 = create_test_announcement(db_session_test, name="Anuncio 1")
@@ -325,17 +309,17 @@ def test_get_announcements_by_blog_post_success(
     # Agregar anuncios al blog post
     client.post(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=blog_post.id, announcement_id=announcement1.id
-        )
+            blog_post_id=blog_post.id, announcement_id=announcement1.id,
+        ),
     )
     client.post(
         ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-            blog_post_id=blog_post.id, announcement_id=announcement2.id
-        )
+            blog_post_id=blog_post.id, announcement_id=announcement2.id,
+        ),
     )
 
     response = client.get(
-        ANNOUNCEMENTS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id)
+        ANNOUNCEMENTS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id),
     )
 
     assert response.status_code == 200
@@ -347,13 +331,12 @@ def test_get_announcements_by_blog_post_success(
 
 
 def test_get_announcements_by_blog_post_not_found(client: TestClient):
-    """
-    Test para verificar el comportamiento cuando el blog post no existe.
+    """Test para verificar el comportamiento cuando el blog post no existe.
     """
     fake_blog_post_id = uuid.uuid4()
 
     response = client.get(
-        ANNOUNCEMENTS_BY_BLOG_POST_URL.format(blog_post_id=fake_blog_post_id)
+        ANNOUNCEMENTS_BY_BLOG_POST_URL.format(blog_post_id=fake_blog_post_id),
     )
 
     assert response.status_code == 404
@@ -361,15 +344,14 @@ def test_get_announcements_by_blog_post_not_found(client: TestClient):
 
 
 def test_get_announcements_by_blog_post_empty(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para obtener anuncios de un blog post que no tiene anuncios.
+    """Test para obtener anuncios de un blog post que no tiene anuncios.
     """
     blog_post = create_test_blog_post(db_session_test)
 
     response = client.get(
-        ANNOUNCEMENTS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id)
+        ANNOUNCEMENTS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id),
     )
 
     assert response.status_code == 200
@@ -378,10 +360,9 @@ def test_get_announcements_by_blog_post_empty(
 
 
 def test_get_announcements_by_blog_post_with_pagination(
-    client: TestClient, db_session_test: Session
+    client: TestClient, db_session_test: Session,
 ):
-    """
-    Test para verificar la paginación en la obtención de anuncios por blog post.
+    """Test para verificar la paginación en la obtención de anuncios por blog post.
     """
     blog_post = create_test_blog_post(db_session_test)
 
@@ -392,14 +373,14 @@ def test_get_announcements_by_blog_post_with_pagination(
         announcements.append(announcement)
         client.post(
             ANNOUNCEMENT_TO_BLOG_POST_URL.format(
-                blog_post_id=blog_post.id, announcement_id=announcement.id
-            )
+                blog_post_id=blog_post.id, announcement_id=announcement.id,
+            ),
         )
 
     # Obtener los primeros 3 anuncios
     response = client.get(
         ANNOUNCEMENTS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id)
-        + "?skip=0&limit=3"
+        + "?skip=0&limit=3",
     )
 
     assert response.status_code == 200
@@ -409,7 +390,7 @@ def test_get_announcements_by_blog_post_with_pagination(
     # Obtener los siguientes 2 anuncios
     response = client.get(
         ANNOUNCEMENTS_BY_BLOG_POST_URL.format(blog_post_id=blog_post.id)
-        + "?skip=3&limit=3"
+        + "?skip=3&limit=3",
     )
 
     assert response.status_code == 200

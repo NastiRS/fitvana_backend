@@ -1,13 +1,13 @@
 import uuid
 from datetime import date
+
 from sqlmodel import Session
 
-from app.domain.models.category import Category
-from app.domain.models.blog_post import BlogPost
-from app.domain.models.tag import Tag
-from app.domain.models.section import Section
-from app.domain.models.announcement import Announcement
-
+from src.domain.models.announcement import Announcement
+from src.domain.models.blog_post import BlogPost
+from src.domain.models.category import Category
+from src.domain.models.section import Section
+from src.domain.models.tag import Tag
 
 # URLs para tests de categorías
 CATEGORY_BASE_URL = "/v1/api/categories"
@@ -46,8 +46,7 @@ def create_test_category(
     name: str = "Categoría de Prueba",
     description: str = "Descripción de prueba",
 ) -> Category:
-    """
-    Crea una categoría de prueba en la base de datos.
+    """Crea una categoría de prueba en la base de datos.
     """
     category = Category(name=name, description=description)
     db_session.add(category)
@@ -57,8 +56,7 @@ def create_test_category(
 
 
 def create_test_tag(db_session: Session, name: str = "Tag de Prueba") -> Tag:
-    """
-    Crea un tag de prueba en la base de datos.
+    """Crea un tag de prueba en la base de datos.
     """
     tag = Tag(name=name)
     db_session.add(tag)
@@ -73,8 +71,7 @@ def create_test_blog_post(
     content: str = "Contenido de prueba",
     category_id: uuid.UUID = None,
 ) -> BlogPost:
-    """
-    Crea un blog post de prueba en la base de datos.
+    """Crea un blog post de prueba en la base de datos.
     Si no se proporciona category_id, crea automáticamente una categoría.
     """
     category_id = category_id or create_test_category(db_session).id
@@ -99,8 +96,7 @@ def create_test_section(
     image_url: str = None,
     blog_post_id: uuid.UUID = None,
 ) -> Section:
-    """
-    Crea una sección de prueba en la base de datos.
+    """Crea una sección de prueba en la base de datos.
     Si no se proporciona blog_post_id, crea automáticamente un blog post.
     """
     blog_post_id = blog_post_id or create_test_blog_post(db_session).id
@@ -124,8 +120,7 @@ def create_test_announcement(
     url: str = "https://example.com",
     image_url: str = "https://example.com/image.jpg",
 ) -> Announcement:
-    """
-    Crea un anuncio de prueba en la base de datos.
+    """Crea un anuncio de prueba en la base de datos.
     """
     announcement = Announcement(
         name=name,
